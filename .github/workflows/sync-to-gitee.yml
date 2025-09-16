@@ -30,7 +30,7 @@ jobs:
       - name: Push to Gitee Mirror
         env:
           # Construct the target Gitee repository URL
-          GITEE_REPO_URL: "https://gitee.com/santec-corporation-cn/${{ inputs.repo-name }}.git"
+          GITEE_REPO_URL: "https://${{ vars.GITEE_USERNAME }}:${{ secrets.GITEE_PAT }}@gitee.com/santec-corporation-cn/${{ inputs.repo-name }}.git"
         run: |
           echo "Syncing to Gitee repository: $GITEE_REPO_URL"
           
@@ -39,7 +39,7 @@ jobs:
           
           # Push all branches and tags, using --force to overwrite the destination
           # This ensures the Gitee repo is a perfect mirror
-          git push --force --all "https://${{ vars.GITEE_USERNAME }}:${{ secrets.GITEE_PAT }}@gitee.com/santec-corporation-cn/${{ inputs.repo-name }}.git"
-          git push --force --tags "https://${{ vars.GITEE_USERNAME }}:${{ secrets.GITEE_PAT }}@gitee.com/santec-corporation-cn/${{ inputs.repo-name }}.git"
+          git push --force --all "$GITEE_REPO_URL"
+          git push --force --tags "$GITEE_REPO_URL"
 
           echo "✅ Successfully synced to Gitee!"

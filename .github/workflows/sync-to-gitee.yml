@@ -30,7 +30,7 @@ jobs:
       - name: Push to Gitee Mirror
         env:
           # Construct the target Gitee repository URL
-          GITEE_REPO_URL: "https://gitee.com/${{ inputs.gitee-org }}/${{ inputs.repo-name }}.git"
+          GITEE_REPO_URL: "https://gitee.com/santec-corporation-cn/${{ inputs.repo-name }}.git"
         run: |
           echo "Syncing to Gitee repository: $GITEE_REPO_URL"
           

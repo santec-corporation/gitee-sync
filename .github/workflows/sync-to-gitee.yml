@@ -1,0 +1,45 @@
+name: Sync to Gitee
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo-name:
+        description: 'The name of the repository to sync.'
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      repo-name:
+        description: 'The name of the repository to sync.'
+        required: true
+        type: string
+        
+jobs:
+  sync:
+    name: Sync to Gitee
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitHub Repository
+        uses: actions/checkout@v4
+        with:
+          # Check out the specified repository from the source org
+          repository: santec-corporation/${{ inputs.repo-name }}
+          # Fetch all history, branches, and tags
+          fetch-depth: 0
+
+      - name: Push to Gitee Mirror
+        env:
+          # Construct the target Gitee repository URL
+          GITEE_REPO_URL: "https://gitee.com/${{ inputs.gitee-org }}/${{ inputs.repo-name }}.git"
+        run: |
+          echo "Syncing to Gitee repository: $GITEE_REPO_URL"
+          
+          # Set the remote URL with embedded credentials
+          git remote set-url --push origin "$GITEE_REPO_URL"
+          
+          # Push all branches and tags, using --force to overwrite the destination
+          # This ensures the Gitee repo is a perfect mirror
+          git push --force --all "https://${{ vars.GITEE_USERNAME }}:${{ secrets.GITEE_PAT }}@gitee.com/santec-corporation-cn/${{ inputs.repo-name }}.git"
+          git push --force --tags "https://${{ vars.GITEE_USERNAME }}:${{ secrets.GITEE_PAT }}@gitee.com/santec-corporation-cn/${{ inputs.repo-name }}.git"
+
+          echo "✅ Successfully synced to Gitee!"
